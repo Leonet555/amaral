@@ -70,6 +70,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::middleware('role:athlete')->group(function () {
         Route::post('/registrations', [RegistrationController::class, 'store']);
         Route::get('/registrations', [RegistrationController::class, 'indexMyRegistrations']);
+        Route::post('/fight-company-kids/events', [EventController::class, 'storeFightCompanyKids']);
     });
 
     // Busca unificada: atletas e equipes (para seguir / se afiliar)

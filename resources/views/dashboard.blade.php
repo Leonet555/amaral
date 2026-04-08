@@ -383,6 +383,26 @@
         .athlete-right-sidebar .suggest-item .btn-follow { margin-left: auto; font-size: .8rem; padding: 4px 10px; }
         .athlete-right-sidebar .search-wrap { padding: 0 16px 12px; }
         .athlete-right-sidebar .search-wrap input { width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--line); font-size: .9rem; }
+        /* Fight Company Kids (React) */
+        .fight-company-kids-card { border: 1px solid rgba(196,30,58,.2); background: linear-gradient(145deg, var(--card) 0%, var(--primary-soft) 100%); }
+        .fight-company-kids-card h3 { color: var(--primary); }
+        .btn-fck-open { width: calc(100% - 32px); margin: 0 16px 16px; padding: 10px 14px; border-radius: 10px; border: none; background: var(--primary); color: #fff; font-weight: 700; font-size: .9rem; cursor: pointer; font-family: inherit; }
+        .btn-fck-open:hover { filter: brightness(0.95); }
+        .fck-app { max-width: 520px; margin: 0 auto; padding: 8px 0 32px; }
+        .fck-title { margin: 0 0 8px; font-size: 1.5rem; font-weight: 800; color: var(--text); letter-spacing: -0.02em; }
+        .fck-subtitle { margin: 0 0 6px; font-size: .95rem; color: var(--muted); line-height: 1.45; }
+        .fck-login-hint { font-size: .92rem; color: var(--muted); margin: 0 0 22px; }
+        .fck-login-hint a { color: var(--primary); font-weight: 700; text-decoration: underline; cursor: pointer; }
+        .fck-section-title { margin: 0 0 14px; font-size: 1.05rem; font-weight: 700; color: var(--text); }
+        .fck-form .fck-field { margin-bottom: 14px; }
+        .fck-form label { display: block; font-weight: 600; font-size: .85rem; margin-bottom: 6px; color: var(--text); }
+        .fck-form input, .fck-form select, .fck-form textarea { width: 100%; padding: 11px 12px; border-radius: var(--radius-sm); border: 1px solid var(--line); font-size: .95rem; font-family: inherit; box-sizing: border-box; background: var(--card); color: var(--text); }
+        .fck-form textarea { resize: vertical; min-height: 72px; }
+        .fck-btn { width: 100%; margin-top: 8px; padding: 12px 16px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-sm); font-weight: 700; font-size: 1rem; cursor: pointer; font-family: inherit; }
+        .fck-btn:hover { filter: brightness(0.95); }
+        .fck-msg { margin-top: 14px; padding: 12px 14px; border-radius: var(--radius-sm); font-size: .9rem; line-height: 1.4; }
+        .fck-msg.err { background: var(--error-bg); color: var(--error-text); border: 1px solid rgba(190,18,60,.2); }
+        .fck-msg.ok { background: var(--success-bg); color: var(--success-text); border: 1px solid rgba(5,95,70,.2); }
         .athlete-right-sidebar .athlete-discover-card { padding: 8px 16px; margin: 0; border: none; border-radius: 0; box-shadow: none; border-bottom: 1px solid var(--line); }
         .athlete-right-sidebar .athlete-discover-card:last-child { border-bottom: none; }
         .athlete-right-sidebar .athlete-discover-card img { width: 36px; height: 36px; }
@@ -1151,6 +1171,7 @@
                         <a href="#" class="nav-item" data-view="perfil"><span class="icon">👤</span><span>Perfil</span></a>
                         <a href="#" class="nav-item" data-view="explorar"><span class="icon">🔍</span><span>Explorar</span></a>
                         <a href="#" class="nav-item" data-view="torneios"><span class="icon">🏆</span><span>Torneios</span></a>
+                        <a href="#" class="nav-item" data-view="fightcompanykids"><span class="icon">🥋</span><span>Fight Company Kids</span></a>
                         <a href="#" class="nav-item" id="athlete-drawer-sair"><span class="icon">🚪</span><span>Sair</span></a>
                     </aside>
 
@@ -1162,6 +1183,7 @@
                             <a href="#" class="nav-item" id="athlete-nav-perfil" data-view="perfil"><span class="icon">👤</span><span>Perfil</span></a>
                             <a href="#" class="nav-item" id="athlete-nav-explorar" data-view="explorar"><span class="icon">🔍</span><span>Explorar</span></a>
                             <a href="#" class="nav-item" id="athlete-nav-torneios" data-view="torneios"><span class="icon">🏆</span><span>Torneios</span></a>
+                            <a href="#" class="nav-item" id="athlete-nav-fightcompanykids" data-view="fightcompanykids"><span class="icon">🥋</span><span>Fight Company Kids</span></a>
                             <a href="#" class="nav-item" id="athlete-nav-sair"><span class="icon">🚪</span><span>Sair</span></a>
                         </nav>
 
@@ -1238,6 +1260,11 @@
                                         <div id="torneio-detail-content"></div>
                                     </div>
                                 </div>
+                            </div>
+
+                            <!-- View: Fight Company Kids (React) -->
+                            <div id="athlete-view-fightcompanykids" class="athlete-fck-view" style="display:none;">
+                                <div id="fight-company-kids-root"></div>
                             </div>
 
                             <!-- View: Perfil (estilo Instagram) -->
@@ -1361,6 +1388,11 @@
                                     <h3>Sugestões para você</h3>
                                     <div id="athlete-discover-list"></div>
                                 </div>
+                            </div>
+                            <div class="card-ig fight-company-kids-card">
+                                <h3>Fight Company Kids</h3>
+                                <p class="muted" style="font-size:.82rem;padding:0 16px 12px;line-height:1.45;margin:0;">Cadastre-se e envie o campeonato infantil. Depois, um organizador pode abrir categorias e inscrições.</p>
+                                <button type="button" class="btn-fck-open" id="btn-fight-company-kids-open">Criar campeonato →</button>
                             </div>
                             <div class="card-ig" id="athlete-teams-section">
                                 <h3>Minhas equipes</h3>
@@ -2412,16 +2444,19 @@ function showAthleteView(viewName) {
     var perfilView = document.getElementById("athlete-view-perfil");
     var explorarView = document.getElementById("athlete-view-explorar");
     var torneiosView = document.getElementById("athlete-view-torneios");
+    var fckView = document.getElementById("athlete-view-fightcompanykids");
     if (feedView) feedView.style.display = viewName === "feed" ? "block" : "none";
     if (perfilView) perfilView.style.display = viewName === "perfil" ? "block" : "none";
     if (explorarView) explorarView.style.display = viewName === "explorar" ? "block" : "none";
     if (torneiosView) torneiosView.style.display = viewName === "torneios" ? "block" : "none";
+    if (fckView) fckView.style.display = viewName === "fightcompanykids" ? "block" : "none";
     document.querySelectorAll(".athlete-nav-left .nav-item[data-view], .athlete-nav-drawer .nav-item[data-view]").forEach(function(el) {
         el.classList.toggle("active", el.dataset.view === viewName);
     });
     if (viewName === "feed") loadFeed();
     if (viewName === "explorar") { loadExplorarDiscover(); setupExplorarSearch(); }
     if (viewName === "torneios") { backTorneioList(); loadTorneiosList(); }
+    if (viewName === "fightcompanykids" && typeof window.FCK_tryMount === "function") window.FCK_tryMount();
 }
 
 async function loadFeed() {
@@ -2690,6 +2725,9 @@ async function initAthlete() {
     setupTorneiosFiltersListeners();
     var linkVerTorneios = document.getElementById("link-ver-torneios");
     if (linkVerTorneios) linkVerTorneios.addEventListener("click", function(e) { e.preventDefault(); showTorneiosView(); });
+
+    var btnFck = document.getElementById("btn-fight-company-kids-open");
+    if (btnFck) btnFck.addEventListener("click", function() { showAthleteView("fightcompanykids"); });
 
     var btnCreateTeam = document.getElementById("btn-create-team");
     if (btnCreateTeam) btnCreateTeam.addEventListener("click", createTeam);
@@ -3242,5 +3280,8 @@ function pwaInstall() {
     <button type="button" onclick="pwaInstall()" style="background: #c41e3a; color: #fff; border: none; padding: 10px 18px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap;">Instalar</button>
   </div>
 </div>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="/js/fight-company-kids-app.js"></script>
 </body>
 </html>

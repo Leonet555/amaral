@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Event;
 use App\Models\Registration;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -198,6 +199,32 @@ class EventController extends Controller
 
         $data['organizer_id'] = $request->user()->id;
         $data['status'] = $data['status'] ?? Event::STATUS_DRAFT;
+
+        $event = Event::create($data);
+
+        return response()->json($event, 201);
+    }
+
+    /**
+     * Atletas: criar evento de campeonato no programa Fight Company Kids (fica como rascunho).
+     */
+    public function storeFightCompanyKids(Request $request)
+    {
+        abort_unless($request->user()->role === User::ROLE_ATHLETE, 403, 'Disponível apenas para contas de atleta.');
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'date' => ['required', 'date'],
+            'starts_at' => ['nullable', 'date'],
+            'location' => ['required', 'string', 'max:255'],
+            'sport_type' => ['required', Rule::in(['BJJ', 'JUDO'])],
+            'registration_deadline' => ['required', 'date'],
+        ]);
+
+        $data['organizer_id'] = $request->user()->id;
+        $data['status'] = Event::STATUS_DRAFT;
+        $data['name'] = 'Fight Company Kids — '.$data['name'];
 
         $event = Event::create($data);
 

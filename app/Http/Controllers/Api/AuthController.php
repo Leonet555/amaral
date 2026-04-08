@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
@@ -67,6 +69,16 @@ class AuthController extends Controller
             'email' => ['required', 'email'],
         ]);
 
+        $mailerName = config('mail.default', 'smtp');
+        $mailerCfg = config("mail.mailers.{$mailerName}", []);
+        if (($mailerCfg['transport'] ?? '') === 'smtp') {
+            if (! filled($mailerCfg['username'] ?? null) || ! filled($mailerCfg['password'] ?? null)) {
+                return response()->json([
+                    'message' => 'O servidor ainda não tem senha de e-mail: no .env preencha MAIL_PASSWORD com a senha da caixa system@vitorum.com.br (Hostinger → E-mails). Confirme MAIL_USERNAME=system@vitorum.com.br. Depois execute: php artisan config:clear',
+                ], 503);
+            }
+        }
+
         try {
             $status = Password::sendResetLink($request->only('email'));
         } catch (QueryException $e) {
@@ -81,8 +93,40 @@ class AuthController extends Controller
                 'message' => $e->getMessage(),
             ]);
 
+            $broker = config('auth.defaults.passwords');
+            $table = config("auth.passwords.{$broker}.table", 'password_reset_tokens');
+            $email = (string) $request->input('email');
+
+            // Fallback automático: se falhar no mailer padrão SMTP (geralmente 465),
+            // tenta novamente com o mailer "hostinger" (porta 587).
+            if ($mailerName !== 'hostinger' && config('mail.mailers.hostinger')) {
+                DB::table($table)->where('email', $email)->delete();
+                $originalMailer = $mailerName;
+
+                try {
+                    Config::set('mail.default', 'hostinger');
+                    $fallbackStatus = Password::sendResetLink(['email' => $email]);
+
+                    if (in_array($fallbackStatus, [Password::RESET_LINK_SENT, Password::INVALID_USER], true)) {
+                        return response()->json([
+                            'message' => 'Se este e-mail estiver cadastrado, você receberá um link para redefinir a senha em instantes.',
+                        ]);
+                    }
+                } catch (Throwable $fallbackException) {
+                    Log::error('forgot_password_mail_fallback', [
+                        'exception' => $fallbackException::class,
+                        'message' => $fallbackException->getMessage(),
+                    ]);
+                } finally {
+                    Config::set('mail.default', $originalMailer);
+                }
+            }
+
+            // Sem apagar, o utilizador fica bloqueado por minutos (429) mesmo sem receber link.
+            DB::table($table)->where('email', $email)->delete();
+
             return response()->json([
-                'message' => 'Não foi possível enviar o e-mail. No .env confira: MAIL_MAILER=smtp, MAIL_HOST=smtp.hostinger.com, MAIL_PORT=465, MAIL_USERNAME e MAIL_PASSWORD da conta system@vitorum.com.br, MAIL_FROM_ADDRESS=system@vitorum.com.br.',
+                'message' => 'Não foi possível conectar ao SMTP. Verifique MAIL_PASSWORD e execute php artisan config:clear. Hostinger: MAIL_HOST=smtp.hostinger.com, MAIL_PORT=465 (ou MAIL_MAILER=hostinger para porta 587). Se o erro persistir, tente MAIL_VERIFY_SSL=false no .env.',
             ], 503);
         }
 

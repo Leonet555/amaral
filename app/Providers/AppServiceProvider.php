@@ -27,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
                 ->subject('Redefinir sua senha — Vitorum')
                 ->line('Você recebeu este e-mail porque foi solicitada a redefinição de senha da sua conta na Vitorum.')
                 ->action('Redefinir senha', $url)
+                ->line('Se o botão acima não abrir, copie e cole este endereço no navegador:')
+                ->line($url)
                 ->line("Este link expira em {$minutes} minutos.")
                 ->line('Se você não fez este pedido, ignore este e-mail.');
         });
