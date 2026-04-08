@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Throwable;
 
 class AuthController extends Controller
 {
@@ -64,7 +67,24 @@ class AuthController extends Controller
             'email' => ['required', 'email'],
         ]);
 
-        $status = Password::sendResetLink($request->only('email'));
+        try {
+            $status = Password::sendResetLink($request->only('email'));
+        } catch (QueryException $e) {
+            Log::error('forgot_password_db', ['message' => $e->getMessage()]);
+
+            return response()->json([
+                'message' => 'Erro na base de dados. No servidor, execute: php artisan migrate (cria a tabela password_reset_tokens).',
+            ], 503);
+        } catch (Throwable $e) {
+            Log::error('forgot_password_mail', [
+                'exception' => $e::class,
+                'message' => $e->getMessage(),
+            ]);
+
+            return response()->json([
+                'message' => 'Não foi possível enviar o e-mail. No .env confira: MAIL_MAILER=smtp, MAIL_HOST=smtp.hostinger.com, MAIL_PORT=465, MAIL_USERNAME e MAIL_PASSWORD da conta system@vitorum.com.br, MAIL_FROM_ADDRESS=system@vitorum.com.br.',
+            ], 503);
+        }
 
         if ($status === Password::RESET_THROTTLED) {
             return response()->json([

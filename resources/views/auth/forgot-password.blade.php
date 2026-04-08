@@ -75,12 +75,15 @@ form.addEventListener("submit", async (event) => {
         const data = await readJsonSafe(response);
 
         if (!response.ok) {
+            if (data && data.message) {
+                throw new Error(data.message);
+            }
             if (data === null || response.status >= 500) {
                 throw new Error(
-                    "Erro no servidor (código " + response.status + "). Verifique o envio de e-mail no .env."
+                    "Erro no servidor (código " + response.status + "). Verifique o envio de e-mail no .env ou as migrações."
                 );
             }
-            throw new Error(data.message || "Não foi possível enviar o link.");
+            throw new Error("Não foi possível enviar o link.");
         }
 
         okBox.textContent = data.message || "Se este e-mail estiver cadastrado, você receberá um link em instantes.";
