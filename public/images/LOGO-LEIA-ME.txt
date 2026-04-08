@@ -1,0 +1,12 @@
+Logo Vitorum
+=============
+
+A logo é carregada pela URL /logo.
+
+- Se existir o arquivo public/images/logo.png, ele será servido em /logo.
+- Se não existir, o site mostra um SVG de fallback com o texto "VITORUM" (sem 404).
+
+Para usar sua logo: salve a imagem como:
+  public/images/logo.png
+
+Recomendado: PNG com fundo transparente, altura em torno de 80–120px (a interface redimensiona automaticamente).

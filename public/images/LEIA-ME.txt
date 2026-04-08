@@ -1,0 +1,12 @@
+Banner genérico de torneio
+=========================
+
+Coloque aqui a imagem que será usada como banner padrão quando um torneio
+não tiver banner definido.
+
+Nome do arquivo: torneio-generico.png
+
+Ou seja, salve sua imagem (ex.: o banner com "TORNEIO", lutas e troféus) como:
+  public/images/torneio-generico.png
+
+Formatos aceitos: PNG (recomendado), JPG também funciona se renomear a rota no código.
